@@ -69,3 +69,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 If you have any questions or issues, please reach out to the project maintainer.
+
+# Team Members
+1. [Faizan Ahmad](https://github.com/faizan415)
+2. [Harish Krishnamoorthy Murali](https://github.com/HarishKMurali)
+3. [Pranav Kumar](https://github.com/PranavKumarAV)
+4. [Vicknesh Balabaskaran](https://github.com/VickneshB)
