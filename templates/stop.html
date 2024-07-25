@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center; /* Center aligns the content */
+            padding-top: 50px; /* Adds space from the top */
+        }
+
+        h1 {
+            font-size: 4em; /* Adjust size as needed */
+            font-weight: bold; /* Makes the font bold */
+            color: {{ color }}; /* Dynamically sets the color */
+        }
+
+        .redirect-button {
+            margin-top: 20px; /* Adds space above the button */
+            padding: 10px 20px; /* Adjust padding as needed */
+            font-size: 1.5em; /* Adjust button text size */
+        }
+    </style>
+</head>
+<body>
+    {% if color == 'black' %}
+        <h1>Error: Unexpected Error Occured</h1> 
+    {% else %}
+    <h1>{{ result }}</h1>
+    <form action="{{ url_for('redirect_back') }}" method="post">
+        <button class="redirect-button" type="submit">Start Over</button>
+    </form>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center; /* Center aligns the content */
+            padding-top: 50px; /* Adds space from the top */
+        }
+
+        h1 {
+            font-size: 2.5em; /* Adjust size as needed */
+            margin-bottom: 30px; /* Adds space below the heading */
+        }
+
+        .video-container {
+            position: relative;
+            width: 40%; /* Adjust width as needed */
+            margin: 0 auto; /* Center aligns the container */
+            overflow: hidden;
+            background-color: #ddd; /* Fallback color */
+        }
+
+        .video-container img {
+            display: block;
+            width: 100%; /* Ensures the image takes full width of container */
+            height: auto;
+            max-width: 100%; /* Ensures the image does not exceed its original size */
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            color: white;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Digital Liveness Verification</h1>
+    <div class="video-container">
+        <img src="{{ url_for('video_capture') }}">
+        <div class="video-overlay">
+            <p id="statusText">Processing...</p>
+        </div>
+    </div>
+    <script>
+        function checkStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.result === 'ACCESS GRANTED' || result.result === 'ACCESS DENIED') {
+                        window.location.href = "{{ url_for('final_result') }}";
+                    } else if (result.result === 'NO FACE DETECTED') {
+                        document.getElementById('statusText').innerText = result.result;
+                        setTimeout(checkStatus, 2000);  // Retry after 2 seconds
+                    } else {
+                        setTimeout(checkStatus, 2000);  // Retry after 2 seconds
+                    }
+                });
+        }
+
+        setTimeout(checkStatus, 1000);  // Initial check after 1 second
+    </script>
+</body>
+</html>

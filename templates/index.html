@@ -1,0 +1,120 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the SYDE Bank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center; /* Center aligns the content */
+            display: flex;
+            flex-direction: column;
+            min-height: 97vh; /* Ensures the body stretches to full height */
+            justify-content: space-between; /* Aligns content to top and bottom */
+            padding-bottom: 20px; /* Provides space at the bottom */
+        }
+
+        h1 {
+            font-size: 3em; /* Adjust size as needed */
+            margin-top: 30px; /* Slightly reduced margin top */
+            margin-bottom: 10px; /* Reduced margin bottom */
+        }
+
+        form {
+            margin-top: 5px; /* Slightly reduced margin top */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            margin-bottom: 25px; /* Increases spacing between input groups */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        label {
+            font-size: 1.2em; /* Increases label font size */
+            margin-right: 10px; /* Adds space between label and input */
+        }
+
+        input[type="text"] {
+            padding: 10px; /* Increases input padding */
+            font-size: 1.2em; /* Increases input font size */
+            width: 300px; /* Adjusts input width */
+            max-width: 100%; /* Ensures input does not overflow */
+        }
+
+        button {
+            padding: 15px 30px; /* Increases button padding */
+            font-size: 1.2em; /* Increases button font size */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .terms {
+            font-size: 0.8em;
+            color: red;
+            margin-top: 20px; /* Adds space above terms */
+            text-align: center; /* Centers the text */
+            max-width: 30%; /* Limits the width to 75% of the screen */
+            margin: 0 auto; /* Centers the div horizontally */
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const accountNumber = document.getElementById('account_number').value;
+            const consentCheckbox = document.getElementById('consent_checkbox');
+
+            const errorDiv = document.getElementById('error_message');
+            const accountNumberPattern = /^[1-9][0-9]{6}$/;
+
+            if (!accountNumberPattern.test(accountNumber)) {
+                errorDiv.innerHTML = 'Invalid Account Number';
+                return false;
+            }
+
+            if (!consentCheckbox.checked) {
+                errorDiv.innerHTML = 'Please consent to use the video for verification purposes.';
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to the SYDE Bank</h1>
+    <form action="/start" method="post" onsubmit="return validateForm()">
+        <div class="input-group">
+            <label for="account_number">Account Number:</label>
+            <input type="text" id="account_number" name="account_number" placeholder="Enter Bank Account Number" required>
+        </div>
+        <div class="input-group">
+            <input type="checkbox" id="consent_checkbox" name="consent_checkbox" required>
+            <label for="consent_checkbox">I consent to use the video for verification purposes.</label>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <div id="error_message" class="error"></div>
+    
+    <div class="terms">
+        By using our liveness detection services, you agree that your biometric data may be collected and processed for the purpose of verifying your identity. The video captured during the process will be used solely for SYDE Bank's verification purposes and will not be used elsewhere. We ensure that your video data is secure and safe, and it will only be saved when necessary for verification purposes. We prioritize the security and confidentiality of your data in accordance with applicable laws and regulations.
+    </div>
+</body>
+</html>
