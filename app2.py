@@ -14,35 +14,28 @@ from datetime import datetime
 import tensorflow as tf
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Necessary for using sessions
+app.secret_key = 'supersecretkey'  
 
-# Initialize the MTCNN face detector
 detector = MTCNN()
 
-# Load the PyTorch model
 model = timm.create_model('vit_base_patch16_224.augreg_in21k_ft_in1k', pretrained=True)
-model.head = torch.nn.Linear(model.head.in_features, 2)  # Assuming binary classification
+model.head = torch.nn.Linear(model.head.in_features, 2)  
 pretrained_model_path = 'vit_teacher_inc_reduced_lr-7.pth'
 if not os.path.exists(pretrained_model_path):
     raise FileNotFoundError(f"Pretrained model file not found: {pretrained_model_path}")
 
-# model.load_state_dict(torch.load(pretrained_model_path, map_location=torch.device('cpu')))
 model = tf.keras.models.load_model('model4.h5')
-# model.eval()
 
-# Load Haar Cascade for face detection
 cascade_path = 'Haarcascades/haarcascade_frontalface_default.xml'
 if not os.path.exists(cascade_path):
     raise FileNotFoundError(f"Haar Cascade file not found: {cascade_path}")
 
 face_cascade = cv2.CascadeClassifier(cascade_path)
 
-# Email setup using yagmail and your App Password
-SENDER_EMAIL = 'syde660team1@gmail.com'
-APP_PASSWORD = 'sdtbddxnvchpeujf'  # Replace with your generated App Password
-RECEIVER_EMAIL = 'vbalabas@uwaterloo.ca'
+SENDER_EMAIL = 'sender_email@example.com'
+APP_PASSWORD = 'sender_passcode'  
+RECEIVER_EMAIL = 'receiver_email@example.com'
 
-# Function to send email using yagmail
 def send_email(subject, body):
     yag = yagmail.SMTP(SENDER_EMAIL, APP_PASSWORD)
     try:
@@ -50,7 +43,6 @@ def send_email(subject, body):
     except Exception as e:
         print(f"Error sending email: {e}")
 
-# Global variables for video capture and processing
 camera = None
 processing = False
 result_data = {'result': None, 'color': None}
@@ -60,7 +52,7 @@ frame_count = 0
 
 def start_video_capture():
     global camera
-    camera_index = 2  # Change this to your camera index
+    camera_index = 2  
     camera = cv2.VideoCapture(camera_index)
     if not camera.isOpened():
         raise RuntimeError(f"Could not start camera at index {camera_index}. Please check if the camera is connected and accessible.")
@@ -76,7 +68,7 @@ def capture_frames(account_number):
     frame_count = 0
     real_count = 0
     fake_count = 0
-    recorded_frames = []  # Initialize list to store frames
+    recorded_frames = []  
 
     while not processing:
         if camera and camera.isOpened():
@@ -90,7 +82,7 @@ def capture_frames(account_number):
                         img_resized = cv2.resize(frame, (64, 64))
                         img_normalized = img_resized / 255.0
                         img_expanded = np.expand_dims(img_normalized, axis=0)
-                        # face = process_face(frame, x, y, w, h)
+                        
                         predicted = model.predict(img_expanded)
                         
                         recorded_frames.append(frame.copy())
@@ -123,7 +115,6 @@ def process_face(frame, x, y, w, h):
     face_tensor = transform(face_pil).unsqueeze(0)
     return face_tensor
 
-
 def predict_face(face_tensor):
     with torch.no_grad():
         outputs = model(face_tensor)
@@ -142,18 +133,18 @@ def evaluate_result(real_count, frame_count, account_number):
         result_data['result'] = 'ACCESS DENIED'
         result_data['color'] = 'black'
         
-        # Generate dynamic filename
+        
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         video_filename = f"{account_number}_{current_time}.avi"
         
         if not email_sent:
-            # send_email('Alert', f'Fake person detected!\nBank Account Number: {account_number}\nVideo saved in local as: {video_filename}')
+            
             print("Email SENT")
             email_sent = True
         
         if recorded_frames:
-            # Define the codec and create VideoWriter object
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')  # You can use other codecs like 'MJPG' or 'MP4V'
+            
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')  
             height, width, layers = recorded_frames[0].shape
             
             video_writer = cv2.VideoWriter(video_filename, fourcc, 20.0, (width, height))
@@ -197,8 +188,8 @@ def index():
 def start():
     global camera, email_sent, processing, result_data
     account_number = request.form['account_number']
-    session['account_number'] = account_number  # Store the account number in session
-    session['original_url'] = request.referrer  # Store the original URL in session
+    session['account_number'] = account_number  
+    session['original_url'] = request.referrer  
     email_sent = False
     processing = False
     result_data = {'result': None, 'color': None}
@@ -230,7 +221,7 @@ def video_capture():
 def final_result():
     result = result_data.get('result', 'Error')
     color = result_data.get('color', 'red')
-    original_url = session.get('original_url', url_for('index'))  # Default to index if not found
+    original_url = session.get('original_url', url_for('index'))  
     return render_template('stop.html', result=result, color=color, original_url=original_url)
 
 @app.route('/redirect_back', methods=['POST'])

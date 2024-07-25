@@ -33,9 +33,9 @@ if not os.path.exists(cascade_path):
 
 face_cascade = cv2.CascadeClassifier(cascade_path)
 
-SENDER_EMAIL = 'syde660team1@gmail.com'
-APP_PASSWORD = 'sdtbddxnvchpeujf'  
-RECEIVER_EMAIL = 'vbalabas@uwaterloo.ca'
+SENDER_EMAIL = 'sender_email@example.com'
+APP_PASSWORD = 'sender_passcode'  
+RECEIVER_EMAIL = 'receiver_email@example.com'
 
 def send_email(subject, body):
     yag = yagmail.SMTP(SENDER_EMAIL, APP_PASSWORD)
